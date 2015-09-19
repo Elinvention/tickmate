@@ -5,11 +5,16 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ListActivity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
 import android.view.Gravity;
 import android.view.Menu;
@@ -29,6 +34,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import de.smasi.tickmate.database.DatabaseOpenHelper;
+import de.smasi.tickmate.notifications.TickmateNotificationBroadcastReceiver;
 import de.smasi.tickmate.views.AboutActivity;
 import de.smasi.tickmate.views.EditTracksActivity;
 import de.smasi.tickmate.views.SettingsActivity;
@@ -67,7 +73,9 @@ public class Tickmate extends ListActivity implements InfiniteScrollAdapter.Infi
 
 	   	getListView().setStackFromBottom(true);
         getListView().setAdapter(mAdapter);
-	}
+
+        TickmateNotificationBroadcastReceiver.activateAlarm(this);
+    }
 
 	private void updateHeader() {
 		LinearLayout header_group = ((LinearLayout) findViewById(R.id.header));
@@ -211,7 +219,6 @@ public class Tickmate extends ListActivity implements InfiniteScrollAdapter.Infi
 	}	
 
 	public void jumpToToday() {
-		Calendar day = Calendar.getInstance();
         ((TickAdapter)getListAdapter()).scrollToLatest();  // TODO js - is this correct place for this?
         mAdapter.getAdapter().unsetActiveDay();
 		refresh();
